@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 93 Setup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #000080, #1084d7);
+            font-family: 'MS Sans Serif', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .setup-window {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #dfdfdf #808080 #808080 #dfdfdf;
+            width: 500px;
+            box-shadow: 1px 1px 0 #ffffff inset, 1px 1px 0 #000000;
+        }
+        
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d7);
+            color: white;
+            padding: 2px 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .title-bar h1 {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            padding: 10px 20px;
+            background: #c0c0c0;
+            border-top: 1px solid #dfdfdf;
+        }
+        
+        button {
+            padding: 4px 12px;
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #dfdfdf #808080 #808080 #dfdfdf;
+            font-family: 'MS Sans Serif', Arial;
+            cursor: pointer;
+        }
+        
+        button:active {
+            border-color: #808080 #dfdfdf #dfdfdf #808080;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-window">
+        <div class="title-bar">
+            <h1>Vindows93 Setup</h1>
+        </div>
+        <div class="content">
+            <p>Welcome to Vindows93 Setup!</p>
+            <p>Click Next to continue with the installation process.</p>
+        </div>
+        <div class="buttons">
+            <button>Cancel</button>
+            <button id="setup">Next ></button>
+        </div>
+        <script>
+            const startSetup = document.getElementById("setup")
+            var content = document.getElementsByClassName("content")[0]
+            var buttons = document.getElementsByClassName("buttons")[0] 
+            var step = 0
+            function stringToNode(htmlString) {
+                if (typeof htmlString !== 'string' || !htmlString.trim()) {
+                    console.error("Invalid HTML string");
+                    return null;
+                }
+
+                try {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlString, 'text/html');
+                    return doc.body.firstChild; // Returns the first node
+                } catch (err) {
+                    console.error("Error parsing HTML string:", err);
+                    return null;
+                }
+            }
+            startSetup.onclick = function() {
+                step += 1
+                content.replaceChildren()
+                if (step == 1) {
+                    content.appendChild(stringToNode("<p>Enter username for Vindows93's nonexistent Windows93 patcher to use.</p>"))
+                    content.appendChild(stringToNode("<input readonly value='windows93' placeholder='windows93'>"))
+                } if (step == 2) {
+                    content.appendChild(stringToNode())
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>
