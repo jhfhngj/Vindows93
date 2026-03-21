@@ -1,11 +1,5 @@
 # Vindows93's Windows93 Patcher
-import os, requests, tarfile
-#import json
-import os
-#import asyncio
-#import aiohttp
-from urllib.parse import urlparse
-
+import os, requests
 print("Now starting Vindows93 creation...")
 #print("Not grabbing Windows93 via its HAR...")
 #HAR_FILE = "v0.windows93.net.har"
