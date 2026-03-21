@@ -77,43 +77,70 @@
         </div>
         <div class="content">
             <p>Welcome to Vindows93 Setup!</p>
-            <p>Click Next to continue with the installation process.</p>
+            <p>Click Next to continue with the installation process. (The patcher isn't working sorry so this setup is basically aesthetic only or wait until patcher is fixed except the part where it creates the Vindows93 OS)</p>
         </div>
         <div class="buttons">
             <button>Cancel</button>
             <button id="setup">Next ></button>
         </div>
         <script>
-            const startSetup = document.getElementById("setup")
-            var content = document.getElementsByClassName("content")[0]
-            var buttons = document.getElementsByClassName("buttons")[0] 
-            var step = 0
-            function stringToNode(htmlString) {
-                if (typeof htmlString !== 'string' || !htmlString.trim()) {
-                    console.error("Invalid HTML string");
-                    return null;
+            const startSetup = document.getElementById("setup");
+            const content = document.getElementsByClassName("content")[0];
+
+            let step = 0;
+            let username = "";
+            let hostAccess = "";
+
+            function setContent(html) {
+                content.innerHTML = html;
+            }
+
+            startSetup.onclick = function () {
+                // Read previous step's values BEFORE changing content
+                if (step === 1) {
+                    const input = document.getElementById("Ahs");
+                    if (input) username = input.value || "windows93";
                 }
 
-                try {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(htmlString, 'text/html');
-                    return doc.body.firstChild; // Returns the first node
-                } catch (err) {
-                    console.error("Error parsing HTML string:", err);
-                    return null;
+                if (step === 2) {
+                    const input = document.getElementById("IAo");
+                    if (input) hostAccess = input.value || "N";
                 }
-            }
-            startSetup.onclick = function() {
-                step += 1
-                content.replaceChildren()
-                if (step == 1) {
-                    content.appendChild(stringToNode("<p>Enter username for Vindows93's nonexistent Windows93 patcher to use.</p>"))
-                    content.appendChild(stringToNode("<input readonly value='windows93' placeholder='windows93'>"))
-                } if (step == 2) {
-                    content.appendChild(stringToNode())
+
+                // Advance step
+                step += 1;
+
+                // Render current step
+                if (step === 1) {
+                    setContent(`
+                        <p>Enter username for Vindows93's Windows93 patcher to use.</p>
+                        <input placeholder="windows93" id="Ahs">
+                    `);
+                } else if (step === 2) {
+                    setContent(`
+                        <p>Would you like access to the host's computer's files whilst you use Windows93? (Y/N)</p>
+                        <input id="IAo">
+                    `);
+                } else if (step === 3) {
+                    setContent(`<p>Press Next to generate your patch configuration.</p>`);
+                } else if (step === 4) {
+                    const data = `${username};${hostAccess}`;
+                    const blob = new Blob([data], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "patchStuff";
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    setContent(`<p>Configuration saved! To patch, install Python then run patch.py.</p>`);
+                    startSetup.disabled = true;
                 }
-            }
-        </script>
+            };
+            </script>
     </div>
 </body>
 </html>

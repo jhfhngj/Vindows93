@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+    }
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+<iframe id="v93" src="https://v3.windows93.net"></iframe>
+
+<script>
+const frame = document.getElementById("v93");
+
+frame.onload = () => {
+    const win = frame.contentWindow;
+
+    // Inject your patch code directly into Windows93
+    win.eval(`
+        import { fs } from "/42/api/fs.js";
+
+        fs.write("/c/users/windows93/Connect to The Real World.js", \`
+            import { fs } from "/42/api/fs.js";
+
+            let rootHandle = null;
+
+            async function pickFolder() {
+              rootHandle = await window.showDirectoryPicker();
+              await readAll(rootHandle);
+            }
+
+            async function readAll(handle) {
+              for await (const entry of handle.values()) {
+
+                if (entry.kind === "file") {
+                  const file = await entry.getFile();
+                  const text = await file.text();
+                  await fs.write("/place/" + file.name, text);
+                }
+
+                if (entry.kind === "directory") {
+                  await readAll(entry);
+                }
+              }
+            }
+
+            function newCon() {
+              fs.mount("/place", "indexeddb");
+              pickFolder();
+            }
+
+            newCon();
+        \`);
+
+        fs.write("/c/users/windows93/Refresh connection with The Real World.js", \`
+            import { fs } from "/42/api/fs.js";
+
+            let rootHandle = null;
+
+            async function pickFolder() {
+              rootHandle = await window.showDirectoryPicker();
+              await readAll(rootHandle);
+            }
+
+            async function readAll(handle) {
+              for await (const entry of handle.values()) {
+
+                if (entry.kind === "file") {
+                  const file = await entry.getFile();
+                  const text = await file.text();
+                  await fs.write("/place/" + file.name, text);
+                }
+
+                if (entry.kind === "directory") {
+                  await readAll(entry);
+                }
+              }
+            }
+
+            function refresh() {
+              if (rootHandle) {
+                readAll(rootHandle);
+              }
+            }
+
+            refresh();
+        \`);
+
+        fs.move("/c/users/windows93/", "/c/users/Vindows93lover");
+    `);
+
+    console.log("Vindows93 patches injected");
+};
+</script>
+
+</body>
+</html>
