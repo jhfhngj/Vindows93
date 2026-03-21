@@ -182,8 +182,17 @@ print("Modifying rootfs to have Windows93...")
 input("Press Enter when you have mounted the ISO.")
 drv = input("Which drive is it? (Ex. /dev/usb0/ or D:\\) Please format properly so disk does not hate me ")
 print("Unzipping rootfs...")
-with tarfile.open(f"{os.path.realpath(drv)}/boot/core.gz", 'r:gz') as tar_ref:
-    tar_ref.extractall(f"{os.path.realpath(drv)}/boot/CORE") # Specify the output directory
+core_gz = os.path.realpath(f"{drv}/boot/core.gz")
+outdir = os.path.realpath(f"{drv}/boot/CORE")
+
+os.makedirs(outdir, exist_ok=True)
+import subprocess
+subprocess.run(
+    f'gzip -dc "{core_gz}" | cpio -idmv',
+    cwd=outdir,
+    shell=True,
+    check=True
+)
 print("Using Misalf's script from a forum to put firefox installer in home directory...")
 with open(f"{os.path.realpath(drv)}/boot/CORE/home/firefoxInstall.sh") as f:
     f.write('''#!/bin/sh
@@ -335,6 +344,5 @@ print("Making it executable...")
 os.system(f"chmod +x {os.path.realpath(drv)}/boot/CORE/home/autoFox.sh")
 os.system(f"chmod +x {os.path.realpath(drv)}/boot/CORE/init")
 print("Rezipping core.gz...")
-with tarfile.open(f"{os.path.realpath(drv)}/boot/core.gz", "w:gz") as tar:
-    tar.add(f"{os.path.realpath(drv)}/boot/CORE/", arcname=os.path.basename(f"{os.path.realpath(drv)}/boot/CORE/"))
+os.system(f"cpio -o -H newc {os.path.realpath(drv)}/boot/CORE | gzip -9 > {os.path.realpath(drv)}/boot/core.gz")
 print("Vindows93 setup complete.")
