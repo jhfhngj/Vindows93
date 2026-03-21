@@ -31,4 +31,4 @@ If patching eventually works there's a configuration generator, setup.html, that
 
 And then of course here's a screenshot:
 
-[!A screenshot of Vindows93 configuration generator/'setup', running with blues and stuff(photo.png)][photo.png]
+[![A screenshot of Vindows93 configuration generator/'setup', running with blues and stuff](photo.png)][photo.png]
