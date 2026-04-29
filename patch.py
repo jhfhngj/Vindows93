@@ -181,7 +181,7 @@ sudo apt-add-repository ppa:cubic-wizard/release
 sudo apt update
 sudo apt install --no-install-recommends cubic""".splitlines():
         os.system(todo)
-os.system("curl -L -o ubuntu-server.iso https://releases.ubuntu.com/22.04/ubuntu-22.04.5-server-amd64.iso")
+os.system("curl -L -o ubuntu-server.iso https://releases.ubuntu.com/20.04.6/ubuntu-20.04.6-desktop-amd64.iso")
 print("Downloaded ISO!")
 print("Creating Cubic working directory...")
 os.makedirs("v93",511,True)
