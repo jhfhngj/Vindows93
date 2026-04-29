@@ -192,7 +192,7 @@ print("Run these commands one by one.")
 print("""sudo apt-get update
 sudo apt update
 sudo apt install firefox
-echo 'exec --no-startup-id firefox --kiosk https://v3.windows93.net' >> /etc/skel/.config/i3-plz-add-after-boot
+echo -e "[Unit]\\nDescription=Firefox Kiosk\\nAfter=network-online.target\\n\\n[Service]\nExecStart=/usr/bin/firefox --kiosk https://v3.windows93.net\\nUser=$USER\\nEnvironment=DISPLAY=:0\\n\\n[Install]\\nWantedBy=graphical.target" | sudo tee /etc/systemd/system/firefox-kiosk.service > /dev/null && sudo systemctl enable firefox-kiosk.service
 """)
 print("After you've done that, start the Cubic ISO creation process and Vindows93 should be good to go.")
 print("After login, copy .config/i3-plz-add-after-boot's contents to the end of your .config/i3.")
