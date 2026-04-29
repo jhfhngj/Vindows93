@@ -4,7 +4,7 @@ import os, shutil, threading
 def check(cmd):
     return shutil.which(cmd)
 
-def cube():
+def cube(*a):
     os.system("/usr/bin/cubic")
 
 print("Now starting Vindows93 creation...")
