@@ -1,5 +1,5 @@
-# Vindows93's Windows93 Patcher
-import os, requests
+# Vindows93 ISO Creation Script
+import os
 print("Now starting Vindows93 creation...")
 #print("Not grabbing Windows93 via its HAR...")
 #HAR_FILE = "v0.windows93.net.har"
@@ -163,179 +163,19 @@ frame.onload = () => {
 </html>
 """
     #f.write(string)
-print("Getting Tiny Core Linux...")
-tcl = requests.get("http://tinycorelinux.net/17.x/x86/release/TinyCore-current.iso")
-if tcl.ok:
-    print("TCL is ok")
-    with open("tiny.iso","wb") as f:
-        f.write(tcl.content)
-else:
-    print("Abort abort, TCL is a goner")
-    exit(1)
-print("Modifying rootfs to have Windows93...")
-drv = input("Which directory is it? (Ex. /home/outTinyCore/ or C:\\Users\\IEatBiscuits\\tinycore\\) Please format properly so disk does not hate me ")
-print("Unzipping rootfs...")
-core_gz = os.path.realpath(f"{drv}/boot/core.gz")
-outdir = os.path.realpath(f"{drv}/boot/CORE")
-
-os.makedirs(outdir, exist_ok=True)
-import subprocess
-subprocess.run(
-    f'gzip -dc "{core_gz}" | cpio -idmv',
-    cwd=outdir,
-    shell=True,
-    check=True
-)
-print("Using Misalf's script from a forum to put firefox installer in home directory...")
-with open(f"{os.path.realpath(drv)}/boot/CORE/home/firefoxInstall.sh") as f:
-    f.write('''#!/bin/sh
-## Author: Misalf
-## v 0.1
-## Jun-6-2014
-
-echo -e "\033]0;Wget...\007"
-
-#. /etc/init.d/tc-functions
-#useBusybox
-
-trap 'echo -e "\033]0;$\007" ; line="=" ; f_line ; trap 2 ; kill -2 $$' 1 2 3 13 15
-
-##******************************************************************************************************************
-##***************************************************Functions******************************************************
-## coreplayer2
-
-## Draws a line at full screen-width  ( use xy=(line#) for row position ;   linecolor=([0]-[7]) linebold=([0]-[7]) ;  line=([char]) )
-f_line() {
-wide=`stty size | cut -d" " -f2`
-#printf "\033[3;0H"
-echo -ne "\033[0${linebold};3${linecolor}m "
-printf '%*s\n' "$(( wide-2 ))" '' | tr ' ' $line
-printf "\033[00m"
-}
-
-## Check Connection / URL
-f_chkconn () {
-echo -ne "\033[00;35m Using\033[01;30m: \033[00;32m${WGET} \033[01;30m::"
-echo -e "\033[00;35m URL\033[01;30m: \033[00;36m${URL}"
-
-line="-"
-f_line
-
-echo -ne "\033[00;36m Testing connection to server\033[01;30m... \033[00m"
-${WGET} -s -T 20 "${URL}" 2>/dev/null &
-rotdash $!
-case $? in
-	0) echo -e "\033[00;32mOK \033[00m"; cx=0;;
-	1) echo -e "\033[00;31mFail\033[00;33m!\033[00m"; cx=1; f_line; exit 1;;
-esac
-}
-##******************************************************************************************************************
-##******************************************************************************************************************
-
-f_resolve_url() {
-url=$1
-domain=`echo $url | sed 's-^[^/]*/*\([^/]*\)/\?.*$-\1-'`
-ipaddr=`ping -c 1 $domain | sed -n 's@^.*(\([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\).*$@\1@p' | head -1`
-req_url=`echo $url | sed "s-/[^/]\+-/$ipaddr-"`
-wget $req_url
-}
-
-##******************************************************************************************************************
-
-#WGET="$(which wget)"
-WGET="$(which busybox) wget"
-
-if [ -z "$1" ]; then
-	echo -e "\033[00;31m No download specified\033[01;30m."
-	echo -e "\033[00;33m Exiting\033[01;30m..."
-	sleep 3
-	exit 1
-else
-	if [ -z "$2" ]; then
-		DIR="."
-		URL="$1"
-	else
-		DIR="$1"
-		if [ ! -d "${DIR}" ]; then
-			echo -e "\033[00;31m Directory does not exist\033[01;30m:"
-			echo -e "\033[01;34m ${DIR}/"
-			echo -e "\033[00;33m Exiting\033[01;30m..."
-			sleep 3
-			exit 1
-		fi
-		URL="$2"
-	fi
-fi
-
-linebold=1
-linecolor=0
-line="="
-f_line
-
-f_chkconn
-
-echo -e "\033[00;35m Downloading to\033[01;30m:"
-echo -e "\033[00;34m ${DIR}/\033[00;33m${URL##*/}"
-line="-"
-f_line
-
-if [ -f ${DIR}/${URL##*/} ]; then
-	echo -e "\033[00;35m Continuing download\033[01;30m..."
-else
-	echo -e "\033[00;35m Starting download\033[01;30m..."
-fi
-
-##******************************************************************************************************************
-
-echo -ne "\033]0;Wget: ${URL##*/}\007"
-
-RETRYNUM=0
-while true; do
-	RETRYNUM=$((RETRYNUM+1))
-	###xterm -title "Wget: ${URL}" -e $(which busybox) wget -P ${DIR} -c ${URL}
-	echo -ne "\033[00;32m"
-	#${WGET} -P ${DIR} -c ${URL} && (echo -e "\n\033[00;33m DONE.") ; break || (echo -e "\033[00;31mERROR\033[01;30m = \033[00;33m$?\n\n\033[00;35mRetrying...\033[00m" ; sleep 2)
-	${WGET} -P ${DIR} -c ${URL}
-	EL=$?
-	case $EL in
-		0)
-			echo -e "\n\033[00;33m DONE. Press any key to exit."
-			line="="
-			f_line
-			break
-			;;
-		*)
-			echo -e "\033[00;31m ERROR\033[01;30m = \033[00;33m${EL}"
-			linebold=0
-			linecolor=1
-			line="-"
-			f_line
-			linebold=1
-			linecolor=0
-			echo -ne "\033[00;35m Waiting 5 seconds\033[01;30m... \033[00;33m"
-			sleep 5 &
-			rotdash $!
-			echo -e "\033[00;35mRetrying\033[01;30m (\033[00;35m#${RETRYNUM}\033[01;30m)\033[00m"
-			;;
-	esac
-done
-
-read junk
-
-echo -e "\033[00m"''')
-print("Making it executable...")
-os.system(f"chmod +x {os.path.realpath(drv)}/boot/CORE/home/firefoxInstall.sh")
-print("Placing autoFox script and init-adding it...")
-with open(f"{os.path.realpath(drv)}/boot/CORE/home/autoFox.sh") as f:
-    f.write("""#!/bin/bash
-firefox --kiosk https://windows93.net""")
-with open(f"{os.path.realpath(drv)}/boot/CORE/init", "a") as f:
-    f.truncate(18)
-    f.write("""exec /home/autoFox.sh
-exec /sbin/init""")
-print("Making it executable...")
-os.system(f"chmod +x {os.path.realpath(drv)}/boot/CORE/home/autoFox.sh")
-os.system(f"chmod +x {os.path.realpath(drv)}/boot/CORE/init")
-print("Rezipping core.gz...")
-os.system(f"cpio -o -H newc {os.path.realpath(drv)}/boot/CORE | gzip -9 > {os.path.realpath(drv)}/boot/core.gz")
-print("Vindows93 setup complete.")
+print("Getting Ubuntu Server 22.04...")
+print("You need curl.")
+os.system("curl -L -o ubuntu-server.iso https://releases.ubuntu.com/22.04/ubuntu-22.04.5-server-amd64.iso")
+print("Installed ISO!")
+print("Creating Cubic working directory...")
+os.makedirs("v93",511,True)
+print("Creating commands for you to run in Cubic...")
+print("Run these commands one by one.")
+print("""sudo apt-get update
+sudo apt update
+sudo apt install xinit xorg
+sudo apt install lightdm i3
+sudo apt install firefox
+echo -e "[Unit]\\nDescription=Firefox Kiosk\\nAfter=network-online.target\\n\\n[Service]\nExecStart=/usr/bin/firefox --kiosk https://v3.windows93.net\\nUser=$USER\\nEnvironment=DISPLAY=:0\\n\\n[Install]\\nWantedBy=graphical.target" | sudo tee /etc/systemd/system/firefox-kiosk.service > /dev/null && sudo systemctl enable firefox-kiosk.service
+""")
+print("After you've done that, start the Cubic ISO creation process and Vindows93 should be good to go.")
