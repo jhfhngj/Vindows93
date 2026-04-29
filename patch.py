@@ -182,7 +182,7 @@ os.system("curl -L -o ubuntu-server.iso https://releases.ubuntu.com/22.04/ubuntu
 print("Downloaded ISO!")
 print("Creating Cubic working directory...")
 os.makedirs("v93",511,True)
-os.system(os.system("which cubic"))
+os.system("/usr/bin/cubic")
 print("Creating commands for you to run in Cubic...")
 print("Run these commands one by one.")
 print("""sudo apt-get update
