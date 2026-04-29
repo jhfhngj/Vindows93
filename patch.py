@@ -1,8 +1,11 @@
 # Vindows93 ISO Creation Script
-import os, shutil
+import os, shutil, threading
 
 def check(cmd):
     return shutil.which(cmd)
+
+def cube():
+    os.system("/usr/bin/cubic")
 
 print("Now starting Vindows93 creation...")
 #print("Not grabbing Windows93 via its HAR...")
@@ -182,7 +185,8 @@ os.system("curl -L -o ubuntu-server.iso https://releases.ubuntu.com/22.04/ubuntu
 print("Downloaded ISO!")
 print("Creating Cubic working directory...")
 os.makedirs("v93",511,True)
-os.system("/usr/bin/cubic")
+t1 = threading.Thread(target=cube, args=("Thread-1",))
+t1.start()
 print("Creating commands for you to run in Cubic...")
 print("Run these commands one by one.")
 print("""sudo apt-get update
