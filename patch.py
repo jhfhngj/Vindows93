@@ -187,13 +187,11 @@ print("Creating Cubic working directory...")
 os.makedirs("v93",511,True)
 t1 = threading.Thread(target=cube, args=("Thread-1",))
 t1.start()
-print("Creating commands for you to run in Cubic...")
-print("Run these commands one by one.")
+print("Creating commands for you to put in Cubic...")
 print("""sudo apt-get update
 sudo apt update
 sudo apt install firefox
 echo -e "[Unit]\\nDescription=Firefox Kiosk\\nAfter=network-online.target\\n\\n[Service]\nExecStart=/usr/bin/firefox --kiosk https://v3.windows93.net\\nUser=$USER\\nEnvironment=DISPLAY=:0\\n\\n[Install]\\nWantedBy=graphical.target" | sudo tee /etc/systemd/system/firefox-kiosk.service > /dev/null && sudo systemctl enable firefox-kiosk.service
 """)
-print("That last one will take a few seconds. Don't mind...")
-print("Next, start the Cubic ISO creation process and Vindows93 should be good to go.")
+print("Put those in preseed, next, start the Cubic ISO creation process and Vindows93 should be good to go.")
 print("After login, copy .config/i3-plz-add-after-boot's contents to the end of your .config/i3.")
