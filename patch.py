@@ -1,5 +1,9 @@
 # Vindows93 ISO Creation Script
-import os
+import os, shutil
+
+def check(cmd):
+    return shutil.which(cmd)
+
 print("Now starting Vindows93 creation...")
 #print("Not grabbing Windows93 via its HAR...")
 #HAR_FILE = "v0.windows93.net.har"
@@ -164,11 +168,21 @@ frame.onload = () => {
 """
     #f.write(string)
 print("Getting Ubuntu Server 22.04...")
-print("You need curl.")
+if not check("curl"):
+    print("Installing curl...")
+    os.system("sudo apt install curl")
+if not check("cubic"):
+    print("Installing Cubic...")
+    for todo in """sudo apt-add-repository universe
+sudo apt-add-repository ppa:cubic-wizard/release
+sudo apt update
+sudo apt install --no-install-recommends cubic""".splitlines():
+        os.system(todo)
 os.system("curl -L -o ubuntu-server.iso https://releases.ubuntu.com/22.04/ubuntu-22.04.5-server-amd64.iso")
-print("Installed ISO!")
+print("Downloaded ISO!")
 print("Creating Cubic working directory...")
 os.makedirs("v93",511,True)
+os.system(os.system("which cubic"))
 print("Creating commands for you to run in Cubic...")
 print("Run these commands one by one.")
 print("""sudo apt-get update
