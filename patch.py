@@ -191,8 +191,6 @@ print("Creating commands for you to run in Cubic...")
 print("Run these commands one by one.")
 print("""sudo apt-get update
 sudo apt update
-sudo apt install xinit xorg
-sudo apt install lightdm i3
 sudo apt install firefox
 echo 'exec --no-startup-id firefox --kiosk https://v3.windows93.net' >> /etc/skel/.config/i3-plz-add-after-boot
 """)
